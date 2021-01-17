@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>2954ba95-dd11-461d-8668-facf4dbc4d28</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Proiect_logica.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="main.py" />
     <Compile Include="Proiect_logica.py" />
   </ItemGroup>
   <ItemGroup>

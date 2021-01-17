@@ -6,59 +6,42 @@ class Node:
     """ Structura arborescenta
         .left, .right -> descendenti
         .parent -> parinte
-        .data -> elementul de pe pozitia resprectiva
-    """
+        .data -> elementul de pe pozitia resprectiva"""
+
     def __init__(self, parent = None):
         self.left = self.right = None 
         self.data = None 
         self.parent = parent
-
-    #def cfrunza(self):
-    #    if self.left and self.right:
-    #        auxs = self.left; auxd = self.right
-    #        while auxs.data == "¬":
-    #            auxs = auxs.right
-    #        while auxd.data == "¬":
-    #            auxd = auxd.right
-    #        if auxs.data not in "∧∨⇒⇔" and auxd.data not in "∧∨⇒⇔":
-    #            return True
-    #        return False
-    #    elif self.right:
-    #        while self.data == "¬":
-    #            self = self.right
-    #        if self.data not in "∧∨⇒⇔":
-    #            return True
-    #        return False
-    #    else:
-    #        return False
 
 
 def paranteze(sir, f):
     """ Functia verifica daca numarul initial de paranteze este 
         corect si daca acestea sunt dispuse corect.
         In caz contrar returneaza si eroarea gasita."""
+
     p = 0
     for i in sir:
-        if i=='(':
+        if i == '(':
             p += 1
-        elif i==')':
+        elif i == ')':
             p -= 1
-        if p<0:
+        if p < 0:
             f.write("Exista o ')' inainte sa fi fost deschisa.\n")
             return False
-    if p>0:
+    if p > 0:
         f.write("Nu sunt destule ')'.\n")
         return False
-    elif p<0:
+    elif p < 0:
         f.write("Nu sunt destule '('.\n")
         return False
     return True
 
 
 def atom(sir, i):
-    """ Functia ajuta la determinare fromulelor atomice compuse.
-        Forma corecta a unui atom: Capital_letter+Positive_intiger
+    """ Functia ajuta la determinarea fromulelor atomice compuse.
+        Forma corecta a unui atom: Capital_letter + Positive_intiger
         Returneaza indicele din sir pe care se termina atomul."""
+
     while(i+1<len(sir) and sir[i+1].isdigit()):
         i += 1
     return i
@@ -125,6 +108,8 @@ def conector(l, precedenta):
 
 
 def nr_p(sir):
+    """Functia determina numarul de paranteze deschise dintr-un sir."""
+
     k = 0
     for i in range(len(sir)):
         if sir[i] == "(":
@@ -133,6 +118,8 @@ def nr_p(sir):
 
 
 def nr_c(sir):
+    """Functia determina numarul de conectori dintr-un sir."""
+
     s = 0
     for con in "¬∧∨⇒⇔":
         s += sir.count(con)
@@ -180,13 +167,14 @@ def s_relaxata(sir, precedenta, f):
             l1[l1_index] = l[i]
             l.remove(aux)
             i = l.index(l1[l1_index])
-            #print(l, l1)
         i += 1
 
     return l[0]
 
 
 def check_steps(sir, index, tree, f):
+    """Functia afiseaza fiecare pas in constructia arborelui."""
+
     if sir[index] == ")":
         f.write(f"{index}: {sir[index]} -> OK pentru {tree.data}\n")
     else:
@@ -283,6 +271,8 @@ def verif(sir, index, tree, f):
 
 
 def preOrderRoot(root):
+    """Functia executa afiseara radacinii arborelui."""
+
     if root == None:
         return []
 
@@ -298,6 +288,8 @@ def preOrderRoot(root):
 
 
 def preOrderNodes(string, padding, pointer, tree, sibling):
+    """Functia executa afiseara arborelui sub forma preorder."""
+
     if tree:
         string.append("\n")
         string.extend(padding)
@@ -320,6 +312,7 @@ def preOrderNodes(string, padding, pointer, tree, sibling):
 
 def printTree(tree, f):
     """ Functia creaza o ilustratie grafica a structurii arborescente."""
+
     str = preOrderRoot(tree)
     for i in str:
         if  i:
@@ -331,6 +324,7 @@ def eroare(sir, err, f):
     """ In cazul in care s-a gasit o eroare in timpul constructiei
         arborelui, functia afiseaza valoare, respectiv indexul valorii
         din sir pentru care s-a detectat problema."""
+
     f.write(f"Indicele valorii din sir pentru care s-a detectat eroarea: {err}" + "\n")
     f.write(f"Valoare pentru care s-a detectat eroarea: {sir[err]}" + "\n")
 
@@ -389,6 +383,7 @@ def s_stricta(sir, tree, f):
 def v_intr(tree, interpretare):
     """ Functia evalueaza valoarea de adevar a propozitie sub interpretarea data.
         Daca atomul nu se afla in interpretarea data returneaza None."""
+
     if tree.data == "¬":
         return not v_intr(tree.right, interpretare)
     elif tree.data == "⇔":
@@ -413,6 +408,8 @@ def v_intr(tree, interpretare):
 
 
 def fnn(tree):
+    """Functia realizaza transformarea unei formule in FNN."""
+
     if tree.left:
         tree.left = fnn(tree.left)
     if tree.right:
@@ -542,6 +539,8 @@ def gen_tabel(tree):
 
 
 def pot(tree, l):
+    """"""
+
     if tree.left and tree.left.data in "¬∧∨⇒⇔":
         l = pot(tree.left, l)
     if tree.right and tree.right.data in "¬∧∨⇒⇔":
@@ -653,6 +652,8 @@ def fnc_t(f1, tree):
 
 
 def interfata():
+    """Functia genereaza interfata programului."""
+
     print("1. Verificare formula in sintaxa stricta")
     print("2. Verificare formula in sintaxa relaxata")
     print("3. Valoarea sub interpretare a formulei introduse")
@@ -663,10 +664,14 @@ def interfata():
     print("8. Rezolutia propozitionala")
     print("9. DP")
     print("10. DPLL")
-    print("0. Iesire din program si afisare exemple in fisierul de intrare\n")
+    print("00. Instructiuni date de intrare")
+    print("0. Iesire din program\n")
 
 
 def analiza():
+    """Functia determina validitatea si satisfiabilitatea
+       unei formule din tabelul de adevar."""
+
     validitate = True
     satisfiabilitate = False
     with open("interpretare.csv", encoding='utf-8') as f:
@@ -694,6 +699,8 @@ def analiza():
 
 
 def mesaj():
+    """"""
+
     text = """
 
 1. Formula in sintaxa stricta: ((¬(P ∨ Q)) ∧ (¬Q))
@@ -701,12 +708,14 @@ def mesaj():
    + optional pe randul urmator precedenta conectorilor, implicit: ¬∧∨⇒⇔
 3. Valoarea sub o interpretare data a propozitiei introduse anterior:
    pe fiecare rand atomul urmat de True sau False
-8. Multime de clauze: cate o clauza pe fiecare linie"""
+8. Multime de clauze: cate o clauza pe fiecare linie: {A, ¬B}"""
     with open("file.in", 'a', encoding='utf-8') as f:
         f.write(text)
 
 
 def prelucrare(clauze, f):
+    """Functia prelucreza setul de clauze primit initial."""
+
     i = 0
     while i < len(clauze):
         if clauze[i] == []:
@@ -729,6 +738,8 @@ def prelucrare(clauze, f):
 
 
 def rezolutie(clauze, f):
+    """Functia implementeaza algoritmul rezolutiei propozitionale."""
+
     aux = prelucrare(clauze, f)
     if aux == False:
         f.write("Propozitia este nesatisfiabila.")
@@ -793,6 +804,8 @@ def rezolutie(clauze, f):
 
 
 def one_l(clauze, f):
+    """Functia aplica regula clauzei cu un singur literal."""
+
     i = 0
     while i < len(clauze):
         if len(clauze[i]) == 1:
@@ -823,6 +836,8 @@ def one_l(clauze, f):
 
 
 def l_pur(clauze, f):
+    """Functia aplica regula literalului pur."""
+
     i = 0
     literali = []
     while i < len(clauze):
@@ -856,6 +871,8 @@ def l_pur(clauze, f):
 
 
 def complement(atom):
+    """Functia returneaza complementul unui atom."""
+
     if atom[0] == "¬":
         return atom[1:]
     else:
@@ -863,6 +880,8 @@ def complement(atom):
 
 
 def dp(clauze, f, ok = False):
+    """Functia implementeaza algoritmul DP."""
+
     if ok:
         aux = prelucrare(clauze, f)
         if aux!= None: 
@@ -920,6 +939,8 @@ def dp(clauze, f, ok = False):
 
 
 def dpll(clauze, f, ok = False):
+    """Functia implementeaza algoritmul DPLL."""
+
     if ok:
         aux = prelucrare(clauze, f)
         if aux!= None: 
@@ -964,6 +985,8 @@ def dpll(clauze, f, ok = False):
  
 
 def tree_to_str(tree, s):
+    """Functia converteste un arbore intr-un sir."""
+
     if tree.data in "¬∧∨⇒⇔":
         s += "("
         if tree.data != "¬":
@@ -1000,6 +1023,8 @@ def sir_c(sir):
 
 
 def meniu():
+    """Functia se ocupa de managementul cerintei si a datelor de intrare."""
+
     interfata()
     case = input("Alegeti cerinta: ")
     is_tree = False
@@ -1218,8 +1243,10 @@ def meniu():
                     f.write("\n")
                     f.write(f"Propozitia este {s}.")
 
+        elif case == "00":
+            mesaj()
         case = input("Alegeti cerinta: ")
-    mesaj()
+
 
 def main():
     meniu()

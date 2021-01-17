@@ -1,184 +1,37 @@
-Expresia initiala: ((P⇔Q)⇔(¬(P⇒¬Q)))
-Formula dupa prelucrarea in sintaxa relaxata: ((P⇔Q)⇔(¬(P⇒(¬Q))))
-0: (
-*
- ├── #
- └── #
+Algoritmul DPLL:
+{{A,¬B}, {A,C}, {¬B,C}, {¬A,B}, {B,¬C}, {¬A,¬C}}
 
-1: (
-*
- ├── *
- │   ├── #
- │   └── #
- └── #
 
-2: P
-*
- ├── *
- │   ├── P
- │   └── #
- └── #
+Facem split pe A. (1)
+Adaugam clauza {A}.
+{{A,¬B}, {A,C}, {¬B,C}, {¬A,B}, {B,¬C}, {¬A,¬C}, {A}}
 
-3: ⇔
-*
- ├── ⇔
- │   ├── P
- │   └── #
- └── #
+Aplicam regula unui literal pentru clauza 7.
+{{¬B,C}, {B}, {B,¬C}, {¬C}}
 
-4: Q
-*
- ├── ⇔
- │   ├── P
- │   └── Q
- └── #
+Aplicam regula unui literal pentru clauza 2.
+{{C}, {¬C}}
 
-5: ) -> OK pentru ⇔
-*
- ├── ⇔
- │   ├── P
- │   └── Q
- └── #
+Aplicam regula unui literal pentru clauza 1.
+{{}}
 
-6: ⇔
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── #
+Multimea contine clauza vida.
+------------------------------------------ (1)
 
-7: (
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── *
-     └── #
+Facem split pe A. (2)
+Adaugam clauza {¬A}.
+{{A,¬B}, {A,C}, {¬B,C}, {¬A,B}, {B,¬C}, {¬A,¬C}, {¬A}}
 
-8: ¬
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── #
+Aplicam regula unui literal pentru clauza 7.
+{{¬B}, {C}, {¬B,C}, {B,¬C}}
 
-9: (
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── *
-         ├── #
-         └── #
+Aplicam regula unui literal pentru clauza 1.
+{{C}, {¬C}}
 
-10: P
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── *
-         ├── P
-         └── #
+Aplicam regula unui literal pentru clauza 1.
+{{}}
 
-11: ⇒
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── #
+Multimea contine clauza vida.
+------------------------------------------ (2)
 
-12: (
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── *
-             └── #
-
-13: ¬
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── #
-
-14: Q
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
-
-15: ) -> OK pentru ¬
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
-
-16: ) -> OK pentru ⇒
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
-
-17: ) -> OK pentru ¬
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
-
-18: ) -> OK pentru ⇔
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
-
-Expresia este o formula propozitionala in sintaxa relaxata.
-Arborele formulei propozitionale:
-
-⇔
- ├── ⇔
- │   ├── P
- │   └── Q
- └── ¬
-     └── ⇒
-         ├── P
-         └── ¬
-             └── Q
+Propozitia este nesatisfiabila.
