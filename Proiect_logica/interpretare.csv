@@ -1,5 +1,5 @@
-P,Q,(P⇔Q)
-False,False,True
-False,True,False
-True,False,False
-True,True,True
+P,Q,(P123⇒Q),(¬(P⇒Q)),(P∨Q),(¬P),((¬P)⇒Q),((P∨Q)∧((¬P)⇒Q)),((¬(P⇒Q))⇔((P∨Q)∧((¬P)⇒Q)))
+False,False,True,False,False,True,False,False,True
+False,True,True,False,True,True,True,True,False
+True,False,False,True,True,False,True,True,True
+True,True,True,False,True,False,True,True,False

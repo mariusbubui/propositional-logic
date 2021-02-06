@@ -56,8 +56,8 @@ def conector(l, precedenta):
             ok = False
 
             for con in precedenta:
-                j = 0
-                while j < len(l[i]):
+                j = len(l[i]) - 1
+                while j >= 0:
                     okj = True
                     if l[i][j] == con:
                         
@@ -100,7 +100,7 @@ def conector(l, precedenta):
                             ok = True
                             break
                     if okj:
-                        j += 1
+                        j -= 1
                 if ok:
                     break
         i += 1
@@ -150,7 +150,7 @@ def s_relaxata(sir, precedenta, f):
 
     if nr_c(sir):
         l.append(sir)
-    
+
     l1 = conector(l, precedenta)
     l = copy.deepcopy(l)
 
@@ -177,6 +177,13 @@ def check_steps(sir, index, tree, f):
 
     if sir[index] == ")":
         f.write(f"{index}: {sir[index]} -> OK pentru {tree.data}\n")
+    elif sir[index] in "∧∨⇔⇒¬":
+        f.write(f"{index}: {sir[index]} - conector\n")
+    elif sir[index] == "(":
+        f.write(f"{index}: {sir[index]} - 'vrea' sa fie compusa\n")
+    elif sir[index].isupper() and sir[index].isalpha() or sir[index] in "⊥⊤":
+        ind = atom(sir, index)
+        f.write(f"{index}: {sir[index : ind + 1]} - atom\n")
     else:
         f.write(f"{index}: {sir[index]}\n")
     aux_tree = copy.deepcopy(tree)
@@ -748,28 +755,23 @@ def rezolutie(clauze, f):
         f.write("Propozitia este satisfiabila valida.")
         return
 
-    i = 0
-    ok = True
+    i = 0; ok = True
     satisfiabila = "satisfiabila"
-    while i<len(clauze)-1:
-        j = i+1
-        while j<len(clauze):
-            aux = copy.deepcopy(clauze[i])
-            aux.extend(clauze[j])
-            aux = set(aux)
-            remove = []
-            k = 0
+    while i < len(clauze) - 1:
+        j = i + 1
+
+        while j < len(clauze):
+            aux = copy.deepcopy(clauze[i]); aux.extend(clauze[j]); aux = set(aux)
+            remove = []; k = 0
+
             for el in aux:
-                if el[0] == "¬" and el[1:] in aux and el not in remove: 
-                    remove.append(el)
-                    remove.append(el[1:])
-                    k += 1
-                elif el[0] != "¬" and "¬" + el in aux and el not in remove:
-                    remove.append(el)
-                    remove.append("¬" + el)
-                    k += 1
+                el_1 = complement(el)
+                if el_1 in aux and el not in remove: 
+                    remove.append(el); remove.append(el_1); k += 1
                 if k == 2:
+                    f.write(f"Din {i+1} si {j+1} putem obtine un rezolvent nou, dar acesta corespunde unei tautologii.\n")
                     break
+
             if k == 1:
                 for el in remove:
                     aux.remove(el)
@@ -888,15 +890,16 @@ def dp(clauze, f, ok = False):
             return aux
 
     one_l(clauze, f)
+
+    if [] in clauze:
+        f.write("\nMultimea contine clauza vida.")
+        return False
+
     l_pur(clauze, f)
 
     if clauze == []:
         f.write("\nNu mai exista alte clauze.")
         return True
-
-    if [] in clauze:
-        f.write("\nMultimea contine clauza vida.")
-        return False
 
     i = 0
     while i < len(clauze) - 1:
@@ -907,13 +910,11 @@ def dp(clauze, f, ok = False):
             aux = set(aux)
             remove = []; k = 0
             for el in aux:
-                if el[0] == "¬" and el[1:] in aux and el not in remove: 
-                    remove.append(el); remove.append(el[1:])
-                    k += 1
-                elif el[0] != "¬" and "¬" + el in aux and el not in remove:
-                    remove.append(el); remove.append("¬" + el)
-                    k += 1
+                el_1 = complement(el)
+                if el_1 in aux and el not in remove: 
+                    remove.append(el); remove.append(el_1); k += 1
                 if k == 2:
+                    f.write(f"Din {i+1} si {j+1} putem obtine un rezolvent nou, dar acesta corespunde unei tautologii.\n")
                     break
             if k == 1:
                 for el in remove:
@@ -947,15 +948,16 @@ def dpll(clauze, f, ok = False):
             return aux
 
     one_l(clauze, f)
+
+    if [] in clauze:
+        f.write("\nMultimea contine clauza vida.\n")
+        return False
+
     l_pur(clauze, f)
 
     if clauze == []:
-        f.write("Nu mai exista alte clauze.\n")
+        f.write("\nNu mai exista alte clauze.\n")
         return True
-
-    if [] in clauze:
-        f.write("Multimea contine clauza vida.\n")
-        return False
     
     literal = clauze[0][0]
 
@@ -1061,8 +1063,10 @@ def meniu():
             with open("file.out", 'w', encoding='utf-8')as f:
                 f.write("Expresia initiala: " + str + "\n")
                 str = s_relaxata(str, precedenta, f)
+                f.write("In functie de precedenta inseram pentru fiecare conector parantezele necesare.\n")
                 if str:
                     f.write("Formula dupa prelucrarea in sintaxa relaxata: "+ str + "\n")
+                    f.write("Codificare: * - se asteapta conector, # - se asteapta propozitie.\n\n")
                     tree = Node()
                     if s_stricta(str, tree, f):
                         f.write("Expresia este o formula propozitionala in sintaxa relaxata.\n")
@@ -1168,7 +1172,8 @@ def meniu():
                             aux.append(clauze[i].strip().replace(" ","").strip("}").strip("{").split(","))
 
                 with open("file.out", 'w', encoding='utf-8') as f:
-                    f.write("Algoritmul rezolutiei propozitionale:\n")
+                    f.write("Algoritmul rezolutiei propozitionale\n")
+                    f.write("Multimea de clauze  initiala:\n")
                     f.write(sir_c(aux) + '\n')
                     rezolutie(aux, f)
 
@@ -1231,16 +1236,20 @@ def meniu():
                 with open("file.out", 'w', encoding='utf-8') as f:
                     s = "satisfiabila"
                     if case == "9":
-                        f.write("Algoritmul DP:\n")
+                        f.write("Algoritmul DP\n")
+                        f.write("Multimea de clauze  initiala:\n")
                         f.write(sir_c(aux) + '\n')
                         if not dp(aux, f, True):
                             s = "nesatisfiabila"
                     else:
                         f.write("Algoritmul DPLL:\n")
+                        f.write("Multimea de clauze  initiala:\n")
                         f.write(sir_c(aux) + '\n')
                         if not dpll(aux, f, True):
                             s = "nesatisfiabila"
                     f.write("\n")
+                    if s == "nesatisfiabila":
+                        f.write("S-a generat clauza vida pe toate ramurile. ")
                     f.write(f"Propozitia este {s}.")
 
         elif case == "00":
