@@ -1248,8 +1248,9 @@ def meniu():
                         if not dpll(aux, f, True):
                             s = "nesatisfiabila"
                     f.write("\n")
-                    if s == "nesatisfiabila":
-                        f.write("S-a generat clauza vida pe toate ramurile. ")
+                    if case == 10:
+                        if s == "nesatisfiabila":
+                            f.write("S-a generat clauza vida pe toate ramurile. ")
                     f.write(f"Propozitia este {s}.")
 
         elif case == "00":
